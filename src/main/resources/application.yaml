@@ -2,10 +2,10 @@ spring:
   profiles:
     active: dev
   application:
-    name: MACULA
+    name: macula-uid
     group: MACULA
   messages:
-    basename: classpath*:i18n/messages,classpath*i18n/validation
+    basename: classpath*:i18n/**/messages,classpath*:i18n/**/validation
   jpa:
     generate-ddl: false
     show-sql: false
@@ -15,9 +15,6 @@ spring:
     template:
       fetch-size: -1
       max-rows: -1
-  http:
-    encoding:
-      force: true
   h2:
     console:
       enabled: false
@@ -25,12 +22,12 @@ macula:
   redis:
     - name: cache
       single-server-config:
-        address: redis://localhost:6379
+        address: ${macula.redis.cache.url}
     - name: data
       single-server-config:
-        address: redis://localhost:6379
+        address: ${macula.redis.data.url}
   klock:
-    address: redis://localhost:6379
+    address: ${macula.redis.klock.url}
     #cluster-server:
     #  node-addresses: 127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005
   datasource:
@@ -38,8 +35,8 @@ macula:
       - name: macula-uid
         ## JDBC配置
         url: ${macula.datasource.macula-uid.url}
-        username: root
-        password:
+        username: ${macula.datasource.macula-uid.username}
+        password: ${macula.datasource.macula-uid.password}
         ## 连接池配置
         max-active: 100
         initial-size: 1
@@ -69,6 +66,15 @@ spring:
     show-sql: true
 
 macula:
+  redis:
+    cache:
+      url: redis://localhost:6379
+    data:
+      url: redis://localhost:6379
+    klock:
+      url: redis://localhost:6379
   datasource:
     macula-uid:
       url: jdbc:mysql://127.0.0.1:3306/macula-uid?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false
+      username: root
+      password:
